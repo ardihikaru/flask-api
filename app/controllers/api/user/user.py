@@ -5,38 +5,38 @@ from app.addons.utils import masked_json_template
 from app.models.user.user import User
 from . import *
 
-@api.route('/<username>')
-# @api.hide
-@api.response(404, 'Json Input should be provided.')
-@api.response(401, 'Unauthorized Access. Access Token should be provided and validated.')
-class UserIDRoute(Resource):
-    # @api.marshal_with(user_results)
-    def get(self, username):
-        '''Get data users (filterable)'''
-        is_valid, code, msg   = is_token_valid(request.headers.get('Authorization'))
-        if is_valid:
-            try:
-                encoded_token = request.headers.get('Authorization').replace('Bearer ', '')
-                resp = User().get_user(encoded_token, username)
-                return masked_json_template(resp, 200)
-            except:
-                abort(400, "JSON Input unrecognizable.")
-        else:
-            abort(code, msg)
-
-    # @api.marshal_with(user_results)
-    def delete(self, username):
-        '''Get data users (filterable)'''
-        is_valid, code, msg   = is_token_valid(request.headers.get('Authorization'))
-        if is_valid:
-            try:
-                encoded_token = request.headers.get('Authorization').replace('Bearer ', '')
-                resp = User().deleting_user(encoded_token, username)
-                return masked_json_template(resp, 403)
-            except:
-                abort(400, "JSON Input unrecognizable.")
-        else:
-            abort(code, msg)
+# @api.route('/<username>')
+# # @api.hide
+# @api.response(404, 'Json Input should be provided.')
+# @api.response(401, 'Unauthorized Access. Access Token should be provided and validated.')
+# class UserIDRoute(Resource):
+#     # @api.marshal_with(user_results)
+#     def get(self, username):
+#         '''Get data users (filterable)'''
+#         is_valid, code, msg   = is_token_valid(request.headers.get('Authorization'))
+#         if is_valid:
+#             try:
+#                 encoded_token = request.headers.get('Authorization').replace('Bearer ', '')
+#                 resp = User().get_user(encoded_token, username)
+#                 return masked_json_template(resp, 200)
+#             except:
+#                 abort(400, "JSON Input unrecognizable.")
+#         else:
+#             abort(code, msg)
+#
+#     # @api.marshal_with(user_results)
+#     def delete(self, username):
+#         '''Get data users (filterable)'''
+#         is_valid, code, msg   = is_token_valid(request.headers.get('Authorization'))
+#         if is_valid:
+#             try:
+#                 encoded_token = request.headers.get('Authorization').replace('Bearer ', '')
+#                 resp = User().deleting_user(encoded_token, username)
+#                 return masked_json_template(resp, 403)
+#             except:
+#                 abort(400, "JSON Input unrecognizable.")
+#         else:
+#             abort(code, msg)
 
 
 @api.route('')
@@ -44,30 +44,15 @@ class UserIDRoute(Resource):
 @api.response(404, 'Json Input should be provided.')
 @api.response(401, 'Unauthorized Access. Access Token should be provided and validated.')
 class UserRoute(Resource):
-    # @api.marshal_with(edit_user_results)
-    # @api.expect(edit_user_data)
-    def put(self):
-        '''Get data users (filterable)'''
-        is_valid, code, msg   = is_token_valid(request.headers.get('Authorization'))
-        if is_valid:
-            json_data       = api.payload
-            encoded_token   = request.headers.get('Authorization').replace('Bearer ','')
-            resp            = User().updating_user(encoded_token, json_data)
-            return masked_json_template(resp, 403)
-        else:
-            abort(code, msg)
-
-@api.route('/active')
-# @api.hide
-@api.response(404, 'Json Input should be provided.')
-@api.response(401, 'Unauthorized Access. Access Token should be provided and validated.')
-class ActiveUserRoute(Resource):
-    # @api.marshal_with(user_results)
-    def get(self):
-        '''Get Active Users'''
-        is_valid, code, msg   = is_token_valid(request.headers.get('Authorization'))
-        if is_valid:
-            resp            = User().get_active_users()
+    @api.doc(security=None)
+    @api.marshal_with(register_results)
+    @api.expect(register_data)
+    def post(self):
+        '''Add new user'''
+        try:
+            json_data = api.payload
+            resp = User().register(json_data)
             return masked_json_template(resp, 200)
-        else:
-            abort(code, msg)
+        except:
+            abort(400, "Input unrecognizable.")
+

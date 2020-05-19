@@ -6,6 +6,11 @@
 - [x] How to install & Run Cockroachdb (CRDB)
 - [ ] How to install & Run RedisDB
 - [ ] Integrate with CRDB, e.g., CRUD of `User Model` with CRDB
+    - [x] Sample `Create` new user
+    - [ ] Sample `Read` user all
+    - [ ] Sample `Read` user by username
+    - [ ] Sample `Update` user by username
+    - [ ] Sample `Delete` user by username
 - [ ] Complete documentation
 
 ## Included components
@@ -33,13 +38,58 @@
     - [MAC OS](https://kb.objectrocket.com/cockroachdb/how-to-install-cockroachdb-on-mac-os-x-307)
     - WINDOWS
     - LINUX
-4. Configure Database (CoachroachDB):
-    
+4. Configure CockroachDB:
+    1. Follow step [here](https://www.cockroachlabs.com/docs/stable/secure-a-cluster.html) and [here](https://www.cockroachlabs.com/docs/stable/build-a-python-app-with-cockroachdb-sqlalchemy.html)
+    2. Add new user:
+        - login: `$ cockroach sql --certs-dir=certs --host=localhost:26257`
+        - Create new database: `CREATE DATABASE flaskapi;`
+        - Create new user: 
+            - Insecure Mode: `CREATE USER flaskuser;`
+            - Secure Mode: `CREATE USER flaskuser WITH PASSWORD 'bismillah';`
+        - Grant user the database access: `GRANT ALL ON DATABASE flaskapi TO flaskuser;`
+    3. Generate cert: `cockroach cert create-client flaskuser --certs-dir=certs --ca-key=my-safe-directory/ca.key`
 
 ## How to use: <TBD>
 1. Run RedisDB
 2. Run CoachroachDB
-    - MAC: `$ cockroach start --insecure --listen-addr=localhost`
+    - [Insecure](https://www.cockroachlabs.com/docs/stable/start-a-local-cluster.html) (For newbie):
+        - RUN: `$ cockroach start --insecure --listen-addr=localhost`
+        - Login SQL: `$ cockroach sql --insecure`
+    - [Secure](https://www.cockroachlabs.com/docs/stable/secure-a-cluster.html) (Recommended):
+        - RUN: <Please follow the steps from the given link above>
+            - Node 1: 
+                ``` 
+                cockroach start \
+                    --certs-dir=certs \
+                    --store=node1 \
+                    --listen-addr=localhost:26257 \
+                    --http-addr=localhost:8080 \
+                    --join=localhost:26257,localhost:26258,localhost:26259 \
+                    --background
+                ```
+            - Node 2: 
+                ``` 
+                cockroach start \
+                    --certs-dir=certs \
+                    --store=node2 \
+                    --listen-addr=localhost:26258 \
+                    --http-addr=localhost:8080 \
+                    --join=localhost:26257,localhost:26258,localhost:26259 \
+                    --background
+                ```
+            - Node 3: 
+                ``` 
+                cockroach start \
+                    --certs-dir=certs \
+                    --store=node3 \
+                    --listen-addr=localhost:26259 \
+                    --http-addr=localhost:8080 \
+                    --join=localhost:26257,localhost:26258,localhost:26259 \
+                    --background
+                ```
+             - Run `Secure Mode`: `$ cockroach init --certs-dir=certs --host=localhost:26257`
+                - Check status: `$ grep 'node starting' node1/logs/cockroach.log -A 11` 
+        - Login SQL: `$ cockroach sql --certs-dir=certs --host=localhost:26257`
 3. Run Flask Web Service
 
 ## Database: Redis Database
