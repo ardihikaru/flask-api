@@ -18,11 +18,11 @@ class LoginByTokenRoute(Resource):
     def post(self):
         '''Login using Binary Token to get Server Token'''
         try:
-            json_data   = api.payload
-            resp        = User().validate_user(json_data=json_data)
-            return masked_json_template(resp, 403)
+            json_data = api.payload
+            resp = User().validate_user(json_data=json_data)
+            return masked_json_template(resp, 200)
         except:
-            resp        = get_json_template(response=False, message="No Json Input Found.", results=-1, total=-1)
+            resp = get_json_template(response=False, message="No Json Input Found.", results=-1, total=-1)
             return resp, 404
 
     @api.response(401, 'Unauthorized Access. Access Token should be provided and validated.')
@@ -31,8 +31,7 @@ class LoginByTokenRoute(Resource):
         '''Retrieve login status'''
         is_valid, code, msg   = is_token_valid(request.headers.get('Authorization'))
         if is_valid:
-            return masked_json_template({"response": True}, 404)
-            # return {"response": True}, code
+            return masked_json_template({"response": True}, 200)
         else:
             abort(code, msg)
 
@@ -43,21 +42,21 @@ class LogoutRoute(Resource):
     @api.marshal_with(get_logout_results)
     def get(self):
         '''Logout and autoamatically revoke current access_token (PS: refresh_token still can be used)'''
-        is_valid, code, msg   = is_token_valid(request.headers.get('Authorization'))
+        is_valid, code, msg = is_token_valid(request.headers.get('Authorization'))
         if is_valid:
-            encoded_token   = request.headers.get('Authorization').replace('Bearer ','')
-            resp            = User().doLogout(encoded_token=encoded_token)
-            return masked_json_template(resp, 404)
+            encoded_token = request.headers.get('Authorization').replace('Bearer ', '')
+            resp = User().do_logout(encoded_token=encoded_token)
+            return masked_json_template(resp, 200)
         else:
             abort(code, msg)
 
-@api.route('/auth/refresh')
-# @api.hide
-@api.response(401, 'Unauthorized Access. Access Token should be provided and validated.')
-class RefreshTokenRoute(Resource):
-    @api.marshal_with(refresh_results)
-    @jwt_refresh_token_required
-    def get(self):
-        '''Use refresh_token to generate another access_token (because the old one has been expired)'''
-        resp = User().do_refresh_token()
-        return masked_json_template(resp, 404)
+# @api.route('/auth/refresh')
+# # @api.hide
+# @api.response(401, 'Unauthorized Access. Access Token should be provided and validated.')
+# class RefreshTokenRoute(Resource):
+#     @api.marshal_with(refresh_results)
+#     @jwt_refresh_token_required
+#     def get(self):
+#         '''Use refresh_token to generate another access_token (because the old one has been expired)'''
+#         resp = User().do_refresh_token()
+#         return masked_json_template(resp, 404)

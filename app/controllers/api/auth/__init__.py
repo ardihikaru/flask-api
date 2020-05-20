@@ -1,9 +1,9 @@
 from flask_restplus import Namespace, fields
 
-# api = Namespace('auth', description='Authentication related operations')
 api = Namespace('/', description='Authentication related operations')
 
 token_data = api.model('token_data', {
+    'username': fields.String,
     'access_token': fields.String,
     'access_token_expired': fields.String,
     'refresh_token': fields.String,
@@ -21,11 +21,7 @@ get_login_results = api.model('get_login_results', {
 })
 
 login_model = api.model('login_model', {
-    'token': fields.String(required=True, description='Token'),
-})
-
-login_self_model = api.model('login_self_model', {
-    'username': fields.String(required=True, description='Binary ID'),
+    'username': fields.String(required=True, description='Username'),
     'password': fields.String(required=True, description='Password'),
 })
 
