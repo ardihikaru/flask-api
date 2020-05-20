@@ -4,7 +4,7 @@
 
 - [x] Base code: Flask App + Swagger UI
 - [x] How to install & Run Cockroachdb (CRDB)
-- [ ] How to install & Run RedisDB
+- [x] How to install & Run RedisDB
 - [x] Enable auth login and logout
     - [x] Enable connection with RedisDB for storing JWT information
 - [ ] Integrate with CRDB, e.g., CRUD of `User Model` with CRDB
@@ -28,14 +28,16 @@
 
 ## Installation
 1. Python library 
-    ```bash
-    pip install Flask flask-redis flask-restplus Flask-JWT-Extended Flask-Cors PyDbLite simplejson futures cryptography inotify_simple
     ```
-    Or simply install through **requirement file**:
-    ```bash
     pip install -r requirements.txt
     ```
 2. Install Redis Database
+    1. Install docker.io
+    2. Install redis-tools
+    3. Go to redis directory: `$ cd others/redis`
+    4. Install `Dockerfile`: `$ docker build -t 5g-dive/redis:1.0 .`
+    5. Instantiate redis container: `. run.sh`
+    5. Test insert data into RedisDB: `. test.sh`
 3. Install Coachroach Database
     - [MAC OS](https://kb.objectrocket.com/cockroachdb/how-to-install-cockroachdb-on-mac-os-x-307)
     - WINDOWS
