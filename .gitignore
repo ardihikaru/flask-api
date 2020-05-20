@@ -8,11 +8,10 @@
 *.so
 
 # Ignore Important Folders
-resources/
+app/data/*
 
 # Ignore Python 3 Environment
-penv/
-wenv/
+venv/
 migrations/
 __pycache__/
 
