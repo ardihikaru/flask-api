@@ -5,6 +5,8 @@
 - [x] Base code: Flask App + Swagger UI
 - [x] How to install & Run Cockroachdb (CRDB)
 - [ ] How to install & Run RedisDB
+- [x] Enable auth login and logout
+    - [x] Enable connection with RedisDB for storing JWT information
 - [ ] Integrate with CRDB, e.g., CRUD of `User Model` with CRDB
     - [x] Sample `Create` new user
     - [ ] Sample `Read` user all
