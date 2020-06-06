@@ -1,15 +1,14 @@
 from app import app, engine, local_settings, Base
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import session
-from app.addons.utils import sql_to_dict_resp, get_json_template, jsonifyResultV2, setQueryLimit, setQueryOptWhere, \
-    sqlresp_to_dict
+from app.addons.utils import sql_to_dict_resp, get_json_template
 from app.addons.database_blacklist.blacklist_helpers import (
     revoke_current_token, extract_identity
 )
 from sqlalchemy.orm import sessionmaker
 from cockroachdb.sqlalchemy import run_transaction
 from .user_model import UserModel
-from .user_functions import get_user_by_username, store_jwt_data
+from .user_functions import get_all_users, get_user_by_username, store_jwt_data
 
 
 class User(UserModel):
@@ -45,19 +44,15 @@ class User(UserModel):
     def __validate_register_data(self, ses, json_data):
         is_input_valid = True
         if "name" not in json_data:
-            is_input_valid = False
             return False, "Name should not be EMPTY."
 
         if "username" not in json_data:
-            is_input_valid = False
             return False, "Username should not be EMPTY."
 
         if "password" not in json_data:
-            is_input_valid = False
             return False, "Password should not be EMPTY."
 
         if "password_confirm" not in json_data:
-            is_input_valid = False
             return False, "Password Confirmation is EMPTY."
 
         if json_data["password"] != json_data["password_confirm"]:
@@ -125,3 +120,17 @@ class User(UserModel):
     def validate_user(self, json_data):
         run_transaction(sessionmaker(bind=engine), lambda var: self.__validate_login_data(var, json_data))
         return get_json_template(response=self.resp_status, results=self.resp_data, total=-1, message=self.msg)
+
+    def tranc_get_users(self, ses):
+        is_valid, users = get_all_users(ses, User)
+        self.set_resp_status(is_valid)
+        self.set_msg("Fetching data failed.")
+        if is_valid:
+            self.set_msg("Collecting data success.")
+
+        self.set_resp_data(users)
+
+    def get_users(self):
+        run_transaction(sessionmaker(bind=engine), lambda var: self.tranc_get_users(var))
+        return get_json_template(response=self.resp_status, results=self.resp_data, total=-1, message=self.msg)
+
