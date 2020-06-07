@@ -3,6 +3,7 @@ import os
 from functools import reduce
 import operator
 import simplejson as json
+from sqlalchemy import inspect
 
 
 def masked_json_template(resp, code):

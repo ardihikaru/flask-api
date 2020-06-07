@@ -19,3 +19,9 @@ register_results = api.model('register_results', {
     'results': fields.Nested(register_data_resp),
     'message': fields.String,
 })
+
+all_user_data = api.model('all_user_data', {
+    'response': fields.Boolean,
+    'results': fields.List(fields.Nested(register_data_resp)),
+    'message': fields.String,
+})
