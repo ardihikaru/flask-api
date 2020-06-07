@@ -7,13 +7,12 @@
 - [x] How to install & Run RedisDB
 - [x] Enable auth login and logout
     - [x] Enable connection with RedisDB for storing JWT information
-- [ ] Integrate with CRDB, e.g., CRUD of `User Model` with CRDB
+- [x] Integrate with CRDB, e.g., CRUD of `User Model` with CRDB
     - [x] Sample `Create` new user
-    - [ ] Sample `Read` user all
-    - [ ] Sample `Read` user by username
-    - [ ] Sample `Update` user by username
-    - [ ] Sample `Delete` user by username
-- [ ] Complete documentation
+    - [x] Sample `Read` user all
+    - [x] Sample `Read` user by username
+    - [x] Sample `Delete` user by username
+- [x] Complete documentation
 
 ## Included components
 1. Python Flask
@@ -98,66 +97,6 @@
 
 ## Database: Redis Database
 RedisDB used only to store JWT-related information
-1. `db=0`; Storing JWT-blacklist.
-    * Will be expired 1-4 months. 
-    * Key Format: `<jti>`
-    * Value Format: Boolean.
-2. `db=1`; Storing Normal User data; 
-    * Key Format: `<email>`
-    * Value Format (dumped to String): 
-    ```javascript
-    {
-        "default_user_type"  : String,
-        "last_login"  : String,
-        "username"    : String (unique - Email),
-        "email"       : String (mgkn nanti username boleh ganti?),
-        "profile" (N) : {
-            "fullname"  : "Kucing Cakep",
-            "gender"    : "Male",
-            "city"      : "Sidoarjo"
-        }
-        "accounts"    : {
-            "gmail" (N)  : {
-                "is_login": Boolean,
-                // what to be saved here?
-            },
-            "youtube" (N)  : 
-                "is_login": Boolean,{
-                // what to be saved here?
-            },
-            "facebook" (N) : {
-                "is_login": Boolean,
-                // what to be saved here?
-            },
-        },
-        "user_type"    : {
-            "streamer" (N) : {
-                "streamer_id": String, // from db=3; Key
-                "streaming_history": [] //list of stream_id @ db=4
-            },
-            "seller" (N)   : {
-                "streamer_id": String, // from db=3; Key
-                "streaming_history": [] //list of stream_id @ db=4
-            }
-        },
-        "played_games": [
-            // list of game titles
-        ],
-        "favorites": {
-            "facebook": [
-                // list of facebook streamer
-                // Format: {<id>, <name>, <url>, <favorited_at>}
-            ],
-            "youtube": [
-                // list of youtube streamer
-                // Format: {<id>, <name>, <url>, <favorited_at>}
-            ]
-        }
-    }
-    ```
-    * Type of user:
-        * `user_type=streamer`; Streamer User
-        * `user_type=seller`; Seller User
         
 ## Accessible APIs 
 * AUTH
@@ -166,12 +105,10 @@ RedisDB used only to store JWT-related information
     * `GET /api/auth/logout`
     * `GET /api/refresh`
 * USER
-    * `PUT /api/user`
-    * `GET /api/user/me`
-    * `PUT /api/user/all`
-    * `PUT /api/user/<username>` (use **Email**)
-    * `DELETE /api/user/<username>` **(Admin ONLY)**
-    * `PUT /api/user/active`
+    * `GET /api/user`
+    * `POST /api/user`
+    * `GET /api/user/<username>` 
+    * `DELETE /api/user/<username>` 
 
 ### Response
 
@@ -179,7 +116,7 @@ RedisDB used only to store JWT-related information
 {
   "status"  : bool,
   "message" : string,
-  "results" : LIST or DICT
+  "results" : `LIST` or `DICT`
 }
 ```
 
@@ -198,14 +135,10 @@ This Web Service returns the following status codes in its API:
 NB: More detail information regarding API Documentation please refer to [Here](https://gitlab.com/idn-games/idn-games-web-service/app/controllers/api/README.md).
 
 ## Contributing
-Privately maintained by Vast Developer Team. 
-For major changes, please open an issue first to discuss what you would like to change.
-
-Please make sure to do the update as appropriate.
+Self-Maintained. If there any issue, please do not hesitate to contact me. 
 
 ## Contributors
 1. Muhammad Febrian Ardiansyah, https://gitlab.com/ardihikaru
-2. Fahim Bagar, https://gitlab.com/fahim.bagar
 
 ## Extra resources
 1. **Thread** with `concurrent.futures`; https://docs.python.org/3/library/concurrent.futures.html#concurrent.futures.ThreadPoolExecutor
