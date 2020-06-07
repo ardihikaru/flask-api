@@ -8,7 +8,7 @@ from app.addons.database_blacklist.blacklist_helpers import (
 from sqlalchemy.orm import sessionmaker
 from cockroachdb.sqlalchemy import run_transaction
 from .user_model import UserModel
-from .user_functions import get_all_users, get_user_by_username, store_jwt_data
+from .user_functions import get_all_users, get_user_by_username, del_user_by_username, store_jwt_data
 
 
 class User(UserModel):
@@ -65,7 +65,7 @@ class User(UserModel):
 
         return True, None
 
-    def tranc_register(self, ses, json_data):
+    def trx_register(self, ses, json_data):
         is_valid, msg = self.__validate_register_data(ses, json_data)
         self.set_resp_status(is_valid)
         self.set_msg(msg)
@@ -80,7 +80,7 @@ class User(UserModel):
         self.set_resp_data(json_data)
 
     def register(self, json_data):
-        run_transaction(sessionmaker(bind=engine), lambda var: self.tranc_register(var, json_data))
+        run_transaction(sessionmaker(bind=engine), lambda var: self.trx_register(var, json_data))
         return get_json_template(response=self.resp_status, results=self.resp_data, total=-1, message=self.msg)
 
     def __validate_login_data(self, ses, json_data):
@@ -121,7 +121,7 @@ class User(UserModel):
         run_transaction(sessionmaker(bind=engine), lambda var: self.__validate_login_data(var, json_data))
         return get_json_template(response=self.resp_status, results=self.resp_data, total=-1, message=self.msg)
 
-    def tranc_get_users(self, ses):
+    def trx_get_users(self, ses):
         is_valid, users = get_all_users(ses, User)
         self.set_resp_status(is_valid)
         self.set_msg("Fetching data failed.")
@@ -131,10 +131,10 @@ class User(UserModel):
         self.set_resp_data(users)
 
     def get_users(self):
-        run_transaction(sessionmaker(bind=engine), lambda var: self.tranc_get_users(var))
+        run_transaction(sessionmaker(bind=engine), lambda var: self.trx_get_users(var))
         return get_json_template(response=self.resp_status, results=self.resp_data, total=-1, message=self.msg)
 
-    def tranc_get_data_by_username(self, ses, username):
+    def trx_get_data_by_username(self, ses, username):
         is_valid, user_data = get_user_by_username(ses, User, username)
         self.set_resp_status(is_valid)
         self.set_msg("Fetching data failed.")
@@ -144,6 +144,18 @@ class User(UserModel):
         self.set_resp_data(user_data)
 
     def get_data_by_username(self, username):
-        run_transaction(sessionmaker(bind=engine), lambda var: self.tranc_get_data_by_username(var, username))
+        run_transaction(sessionmaker(bind=engine), lambda var: self.trx_get_data_by_username(var, username))
         return get_json_template(response=self.resp_status, results=self.resp_data, total=-1, message=self.msg)
 
+    def trx_del_data_by_username(self, ses, username):
+        is_valid, user_data, msg = del_user_by_username(ses, User, username)
+        self.set_resp_status(is_valid)
+        self.set_msg(msg)
+        if is_valid:
+            self.set_msg("Deleting data success.")
+
+        self.set_resp_data(user_data)
+
+    def delete_data_by_username(self, username):
+        run_transaction(sessionmaker(bind=engine), lambda var: self.trx_del_data_by_username(var, username))
+        return get_json_template(response=self.resp_status, results=self.resp_data, total=-1, message=self.msg)

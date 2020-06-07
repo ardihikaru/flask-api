@@ -17,6 +17,7 @@ def get_all_users(ses, user_model):
     else:
         return False, None
 
+
 def get_user_by_username(ses, user_model, username, show_passwd=False):
     try:
         data = ses.query(user_model).filter_by(username=username).one()
@@ -28,6 +29,22 @@ def get_user_by_username(ses, user_model, username, show_passwd=False):
         return True, dict_user
     else:
         return False, None
+
+
+def del_user_by_username(ses, user_model, username, show_passwd=False):
+    try:
+        data = ses.query(user_model).filter_by(username=username).one()
+        ses.query(user_model).filter_by(username=username).delete()
+    except NoResultFound:
+        return False, None, "User not found"
+
+    dict_user = data.to_dict(show_passwd)
+
+    if len(dict_user) > 0:
+        return True, dict_user, None
+    else:
+        return False, None, None
+
 
 def store_jwt_data(json_data):
     my_identity = {
