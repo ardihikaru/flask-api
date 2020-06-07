@@ -66,3 +66,17 @@ class UserRoute(Resource):
         except:
             abort(400, "Input unrecognizable.")
 
+@api.route('/<username>')
+# @api.hide
+@api.response(404, 'Json Input should be provided.')
+@api.response(401, 'Unauthorized Access. Access Token should be provided and validated.')
+class UserFindRoute(Resource):
+    @api.doc(security=None)
+    @api.marshal_with(all_user_data)
+    def get(self, username):
+        '''Get user data'''
+        try:
+            resp = User().get_data_by_username(username)
+            return masked_json_template(resp, 200)
+        except:
+            abort(400, "Input unrecognizable.")

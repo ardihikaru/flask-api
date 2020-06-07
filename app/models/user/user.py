@@ -134,3 +134,16 @@ class User(UserModel):
         run_transaction(sessionmaker(bind=engine), lambda var: self.tranc_get_users(var))
         return get_json_template(response=self.resp_status, results=self.resp_data, total=-1, message=self.msg)
 
+    def tranc_get_data_by_username(self, ses, username):
+        is_valid, user_data = get_user_by_username(ses, User, username)
+        self.set_resp_status(is_valid)
+        self.set_msg("Fetching data failed.")
+        if is_valid:
+            self.set_msg("Collecting data success.")
+
+        self.set_resp_data(user_data)
+
+    def get_data_by_username(self, username):
+        run_transaction(sessionmaker(bind=engine), lambda var: self.tranc_get_data_by_username(var, username))
+        return get_json_template(response=self.resp_status, results=self.resp_data, total=-1, message=self.msg)
+
