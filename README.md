@@ -7,12 +7,12 @@
 - [x] How to install & Run RedisDB
 - [x] Enable auth login and logout
     - [x] Enable connection with RedisDB for storing JWT information
-- [ ] Integrate with CRDB, e.g., CRUD of `User Model` with CRDB
+- [x] Integrate with CRDB, e.g., CRUD of `User Model` with CRDB
     - [x] Sample `Create` new user
-    - [ ] Sample `Read` user all
-    - [ ] Sample `Read` user by username
+    - [x] Sample `Read` user all
+    - [x] Sample `Read` user by username
     - [ ] Sample `Update` user by username
-    - [ ] Sample `Delete` user by username
+    - [x] Sample `Delete` user by username
 - [ ] Complete documentation
 
 ## Included components
