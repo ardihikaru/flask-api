@@ -210,3 +210,33 @@ def get_user_data_by_hobby_between(ses, user_model, hobby, start_date, end_date)
     else:
         return False, None
 
+
+def del_all_data(ses, data_model, args=None):
+    deleted_data = []
+    no_filter = True
+    try:
+        data = None
+        if len(args["filter"]) > 0:
+            if "id" in args["filter"]:
+                for i in range(len(args["filter"]["id"])):
+                    uid = args["filter"]["id"][i]
+                    data = ses.query(data_model).filter_by(id=uid).one()
+                    deleted_data.append(data.to_dict())
+                    ses.query(data_model).filter_by(id=uid).delete()
+                    no_filter = False
+        if no_filter:
+            data = ses.query(data_model).all()
+            ses.query(data_model).delete()
+    except NoResultFound:
+        return False, None, "User not found"
+
+    if no_filter:
+        dict_drone = sqlresp_to_dict(data)
+    else:
+        dict_drone = deleted_data
+
+    if len(dict_drone) > 0:
+        return True, dict_drone, None
+    else:
+        return False, None, None
+
