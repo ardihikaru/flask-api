@@ -6,10 +6,14 @@ import simplejson as json
 from sqlalchemy import inspect
 
 
-def masked_json_template(resp, code):
+def masked_json_template(resp, code, no_checking=False, resp_code=403):
     try:
-        if resp["response"]:
+        if no_checking:
             return resp, 200
+        elif resp["response"]:
+            return resp, 200
+        elif not resp["response"]:
+            return resp, resp_code
         else:
             return resp, code
     except:
@@ -159,7 +163,7 @@ def week_range(date=None, date_format="%Y-%m-%d %H:%M:%S"):
     """Find the first/last day of the week for the given day.
     Assuming weeks start on Sunday and end on Saturday.
 
-    date        : ``String``. 
+    date        : ``String``.
 
     date_format : ``String`` ( Default = ``YYYY-mm-dd HH:MM:SS`` ).
 
@@ -356,6 +360,17 @@ def sql_to_dict_resp(obj):
         result["total"] = len(data)
 
     return result
+
+def json_load_str(str_json, type="list"):
+    if len(str_json) > 0:
+        return json.loads(str_json)
+    else:
+        if type == "list":
+            return []
+        elif type == "dict":
+            return {}
+        else:
+            return []
 
 # data = [0.02, 0.02, -0.35, 0.02, -2.1, 0.02, 0.02]
 # total = get_total(data)

@@ -1,3 +1,10 @@
+## 1.1.0 (July 01, 2020)
+  - Merge branch 'feature/api/nested-url' into develop
+  - updated another example: GET api/users/<hobby>/register_between/<start_date>/<end_date>
+  - updated another example: GET api/users/<hobby>/<register_after>
+  - updated new APIs and fixed some bugs
+  - Merge branch 'release-1.0' into develop
+
 ## 1.0 (June 07, 2020)
   - Merge branch 'feature/readme' into develop
   - completed documentation
