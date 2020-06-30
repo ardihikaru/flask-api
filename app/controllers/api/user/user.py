@@ -77,6 +77,29 @@ class UserRoute(Resource):
         except:
             abort(400, "Input unrecognizable.")
 
+    @api.doc(security=None)
+    @api.marshal_with(delete_data_results)
+    @api.doc(params={
+        'filter': {'description': 'filter'},
+        'range': {'description': 'range'},
+        'sort': {'description': 'sort'}
+    })
+    def delete(self):
+        '''Delete all existing User data'''
+        try:
+            try:
+                get_args = {
+                    "filter": request.args.get('filter', default="{}", type=str),
+                    "range": request.args.get('range', default="[]", type=str),
+                    "sort": request.args.get('sort', default="[]", type=str)
+                }
+            except:
+                get_args = None
+            resp = User().delete_all_user_data(get_args)
+            return masked_json_template(resp, 200)
+        except:
+            abort(400, "Input unrecognizable.")
+
 @api.route('/username/<username>')
 # @api.hide
 @api.response(404, 'Json Input should be provided.')

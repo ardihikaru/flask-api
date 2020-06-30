@@ -40,3 +40,8 @@ editable_data = api.model('editable_data', {
     'email': fields.String,
     'hobby': fields.String,
 })
+
+delete_data_results = api.model('delete_data_results', {
+    'response': fields.Boolean,
+    'message': fields.String,
+})
