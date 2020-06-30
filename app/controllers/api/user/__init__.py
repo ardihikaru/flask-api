@@ -7,6 +7,7 @@ register_data = api.model('register_data', {
     'name': fields.String,
     'username': fields.String,
     'email': fields.String,
+    'hobby': fields.String,
     'password': fields.String,
     'password_confirm': fields.String,
 })
@@ -16,6 +17,8 @@ register_data_resp = api.model('register_data_resp', {
     'name': fields.String,
     'username': fields.String,
     'email': fields.String,
+    'hobby': fields.String,
+    'create_time': fields.String,
 })
 
 register_results = api.model('register_results', {
@@ -35,4 +38,5 @@ editable_data = api.model('editable_data', {
     'name': fields.String,
     'username': fields.String,
     'email': fields.String,
+    'hobby': fields.String,
 })

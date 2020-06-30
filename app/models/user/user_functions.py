@@ -4,6 +4,8 @@ from app.addons.redis.translator import redis_get, redis_set
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, decode_token, get_jti
 from app.addons.utils import sqlresp_to_dict
 from app.addons.cryptography.fernet import encrypt
+# from datetime import date  # eg.g date.today())
+from sqlalchemy import Date, cast
 
 
 def insert_new_data(ses, user_model, new_data):
@@ -12,6 +14,7 @@ def insert_new_data(ses, user_model, new_data):
                 name=new_data["name"],
                 username=new_data["username"],
                 email=new_data["email"],
+                hobby=new_data["hobby"],
                 password=new_data["password"],
                 identifier=new_data["identifier"]
             )
@@ -111,12 +114,14 @@ def upd_user_by_userid(ses, user_model, userid, show_passwd=False, new_data=None
             data.name = new_data["name"] if "name" in new_data else data.name
             data.username = new_data["username"] if "username" in new_data else data.username
             data.email = new_data["email"] if "email" in new_data else data.email
+            data.hobby = new_data["hobby"] if "hobby" in new_data else data.hobby
 
         ses.query(user_model).filter_by(id=userid).update(
             {
                 "name": data.name,
                 "username": data.username,
-                "email": data.email
+                "email": data.email,
+                "hobby": data.hobby
             }
         )
     except NoResultFound:
@@ -163,3 +168,17 @@ def store_jwt_data(json_data):
     # redis_set(rc, json_data["username"] + "-refresh-token-exp", False, app.config["LIMIT_REFRESH_TOKEN"])
 
     return access_token, refresh_token, access_token_expired, refresh_token_expired
+
+
+def get_user_data_by_hobby(ses, user_model, hobby, register_after):
+    try:
+        data = ses.query(user_model).filter_by(hobby=hobby).filter(cast(user_model.create_time, Date) >= register_after).all()
+    except NoResultFound:
+        return False, None
+    dict_user = sqlresp_to_dict(data)
+
+    if len(dict_user) > 0:
+        return True, dict_user
+    else:
+        return False, None
+

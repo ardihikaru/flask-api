@@ -8,6 +8,7 @@ class UserModel(Base):
     name = Column(String(50))
     username = Column(String(50))
     email = Column(String(100))
+    hobby = Column(String(100))
     password = Column(String(150))
     identifier = Column(String(150))
     create_time = Column(TIMESTAMP, server_default=text('(now())'))
@@ -18,6 +19,7 @@ class UserModel(Base):
             'name': self.name,
             'username': self.username,
             'email': self.email,
+            'hobby': self.hobby,
             'create_time': self.create_time
         }
         if show_passwd:

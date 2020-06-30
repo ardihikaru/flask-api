@@ -139,3 +139,19 @@ class UserIDFindRoute(Resource):
             return masked_json_template(resp, 200)
         except:
             abort(400, "Input unrecognizable.")
+
+
+@api.route('/<hobby>/<register_after>')
+# @api.hide
+@api.response(404, 'Json Input should be provided.')
+@api.response(401, 'Unauthorized Access. Access Token should be provided and validated.')
+class UsernameHobbyFindRoute(Resource):
+    @api.doc(security=None)
+    @api.marshal_with(register_results)
+    def get(self, hobby, register_after):
+        '''Get user's hobby'''
+        try:
+            resp = User().get_data_by_hobby(hobby, register_after)
+            return masked_json_template(resp, 200)
+        except:
+            abort(400, "Input unrecognizable.")
