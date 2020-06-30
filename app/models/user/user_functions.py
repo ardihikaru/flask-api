@@ -10,15 +10,25 @@ from sqlalchemy import Date, cast, and_  # detailed here: https://docs.sqlalchem
 
 def insert_new_data(ses, user_model, new_data):
     new_data["identifier"] = encrypt(new_data["username"])
-    ses.add(user_model(
-                name=new_data["name"],
-                username=new_data["username"],
-                email=new_data["email"],
-                hobby=new_data["hobby"],
-                password=new_data["password"],
-                identifier=new_data["identifier"]
-            )
-    )
+    if "create_time" in new_data:
+        ses.add(user_model(
+            name=new_data["name"],
+            username=new_data["username"],
+            email=new_data["email"],
+            hobby=new_data["hobby"],
+            password=new_data["password"],
+            identifier=new_data["identifier"],
+            create_time=new_data["create_time"]
+        ))
+    else:
+        ses.add(user_model(
+            name=new_data["name"],
+            username=new_data["username"],
+            email=new_data["email"],
+            hobby=new_data["hobby"],
+            password=new_data["password"],
+            identifier=new_data["identifier"]
+        ))
 
     _, inserted_data = get_data_by_identifier(ses, user_model, new_data["identifier"])
 
@@ -199,4 +209,34 @@ def get_user_data_by_hobby_between(ses, user_model, hobby, start_date, end_date)
         return True, dict_user
     else:
         return False, None
+
+
+def del_all_data(ses, data_model, args=None):
+    deleted_data = []
+    no_filter = True
+    try:
+        data = None
+        if len(args["filter"]) > 0:
+            if "id" in args["filter"]:
+                for i in range(len(args["filter"]["id"])):
+                    uid = args["filter"]["id"][i]
+                    data = ses.query(data_model).filter_by(id=uid).one()
+                    deleted_data.append(data.to_dict())
+                    ses.query(data_model).filter_by(id=uid).delete()
+                    no_filter = False
+        if no_filter:
+            data = ses.query(data_model).all()
+            ses.query(data_model).delete()
+    except NoResultFound:
+        return False, None, "User not found"
+
+    if no_filter:
+        dict_drone = sqlresp_to_dict(data)
+    else:
+        dict_drone = deleted_data
+
+    if len(dict_drone) > 0:
+        return True, dict_drone, None
+    else:
+        return False, None, None
 

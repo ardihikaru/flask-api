@@ -1,3 +1,10 @@
+## 1.2.0 (July 01, 2020)
+  - Merge branch 'feature/api/optional-delete' into develop
+  - added new feature: can delete by filter (e.g. deleting selected IDs)
+  - Merge branch 'feature/addon/bulk-insert' into develop
+  - added bulk insert of user data
+  - Merge branch 'release-1.1' into develop
+
 ## 1.1.0 (July 01, 2020)
   - Merge branch 'feature/api/nested-url' into develop
   - updated another example: GET api/users/<hobby>/register_between/<start_date>/<end_date>
