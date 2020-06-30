@@ -1,0 +1,38 @@
+[
+  {
+    "name": "ardi",
+    "username": "ardi",
+    "email": "ardi@gmail.com",
+    "hobby": "eating",
+    "password": "ardi",
+    "password_confirm": "ardi",
+    "create_time": "2020-06-29 16:49:24.517730"
+  },
+  {
+    "name": "yuza",
+    "username": "yuza",
+    "email": "yuza@gmail.com",
+    "hobby": "eating",
+    "password": "yuza",
+    "password_confirm": "yuza",
+    "create_time": "2020-06-29 16:49:24.517730"
+  },
+  {
+    "name": "budi",
+    "username": "budi",
+    "email": "budi@gmail.com",
+    "hobby": "eating",
+    "password": "budi",
+    "password_confirm": "budi",
+    "create_time": "2020-06-30 16:49:24.517730"
+  },
+  {
+    "name": "ria",
+    "username": "ria",
+    "email": "ria@gmail.com",
+    "hobby": "sleeping",
+    "password": "ria",
+    "password_confirm": "ria",
+    "create_time": "2020-06-30 16:49:24.517730"
+  }
+]
