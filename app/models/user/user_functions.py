@@ -5,7 +5,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token, get_jw
 from app.addons.utils import sqlresp_to_dict
 from app.addons.cryptography.fernet import encrypt
 # from datetime import date  # eg.g date.today())
-from sqlalchemy import Date, cast
+from sqlalchemy import Date, cast, and_  # detailed here: https://docs.sqlalchemy.org/en/13/core/sqlelement.html?
 
 
 def insert_new_data(ses, user_model, new_data):
@@ -173,6 +173,24 @@ def store_jwt_data(json_data):
 def get_user_data_by_hobby(ses, user_model, hobby, register_after):
     try:
         data = ses.query(user_model).filter_by(hobby=hobby).filter(cast(user_model.create_time, Date) >= register_after).all()
+    except NoResultFound:
+        return False, None
+    dict_user = sqlresp_to_dict(data)
+
+    if len(dict_user) > 0:
+        return True, dict_user
+    else:
+        return False, None
+
+
+def get_user_data_by_hobby_between(ses, user_model, hobby, start_date, end_date):
+    try:
+        data = ses.query(user_model).filter_by(hobby=hobby).filter(
+            and_(
+                cast(user_model.create_time, Date) >= start_date,
+                cast(user_model.create_time, Date) <= end_date
+            )
+        ).all()
     except NoResultFound:
         return False, None
     dict_user = sqlresp_to_dict(data)

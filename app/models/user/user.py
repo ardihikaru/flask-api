@@ -9,7 +9,8 @@ from sqlalchemy.orm import sessionmaker
 from cockroachdb.sqlalchemy import run_transaction
 from .user_model import UserModel
 from .user_functions import get_all_users, get_user_by_username, del_user_by_username, store_jwt_data, \
-    del_user_by_userid, upd_user_by_userid, get_user_by_userid, insert_new_data, get_user_data_by_hobby
+    del_user_by_userid, upd_user_by_userid, get_user_by_userid, insert_new_data, get_user_data_by_hobby, \
+    get_user_data_by_hobby_between
 import simplejson as json
 
 
@@ -229,5 +230,19 @@ class User(UserModel):
 
     def get_data_by_hobby(self, hobby, register_after):
         run_transaction(sessionmaker(bind=engine), lambda var: self.trx_get_data_by_hobby(var, hobby, register_after))
+        return get_json_template(response=self.resp_status, results=self.resp_data, total=-1, message=self.msg)
+
+
+    def trx_get_data_by_hobby_between(self, ses, hobby, start_date, end_date):
+        is_valid, user_data = get_user_data_by_hobby_between(ses, User, hobby, start_date, end_date)
+        self.set_resp_status(is_valid)
+        self.set_msg("Fetching data failed.")
+        if is_valid:
+            self.set_msg("Collecting data success.")
+
+        self.set_resp_data(user_data)
+
+    def get_data_by_hobby_between(self, hobby, start_date, end_date):
+        run_transaction(sessionmaker(bind=engine), lambda var: self.trx_get_data_by_hobby_between(var, hobby, start_date, end_date))
         return get_json_template(response=self.resp_status, results=self.resp_data, total=-1, message=self.msg)
 
