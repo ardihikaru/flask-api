@@ -10,15 +10,25 @@ from sqlalchemy import Date, cast, and_  # detailed here: https://docs.sqlalchem
 
 def insert_new_data(ses, user_model, new_data):
     new_data["identifier"] = encrypt(new_data["username"])
-    ses.add(user_model(
-                name=new_data["name"],
-                username=new_data["username"],
-                email=new_data["email"],
-                hobby=new_data["hobby"],
-                password=new_data["password"],
-                identifier=new_data["identifier"]
-            )
-    )
+    if "create_time" in new_data:
+        ses.add(user_model(
+            name=new_data["name"],
+            username=new_data["username"],
+            email=new_data["email"],
+            hobby=new_data["hobby"],
+            password=new_data["password"],
+            identifier=new_data["identifier"],
+            create_time=new_data["create_time"]
+        ))
+    else:
+        ses.add(user_model(
+            name=new_data["name"],
+            username=new_data["username"],
+            email=new_data["email"],
+            hobby=new_data["hobby"],
+            password=new_data["password"],
+            identifier=new_data["identifier"]
+        ))
 
     _, inserted_data = get_data_by_identifier(ses, user_model, new_data["identifier"])
 
