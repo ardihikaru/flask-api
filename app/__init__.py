@@ -13,8 +13,6 @@ from flask_redis import FlaskRedis
 from redis import StrictRedis
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-# from flask_migrate import Migrate, MigrateCommand
-# from flask_script import Manager
 
 executor = ThreadPoolExecutor(100)
 init_folders(local_settings)
@@ -70,7 +68,7 @@ rc_user = StrictRedis(
 )
 
 # encrypt & decrypt
-key = local_settings["android_key"].encode()
+key = local_settings["fernet_key"].encode()
 fernet = Fernet(key)
 
 authorizations = {
@@ -90,7 +88,3 @@ api = Api(app, version='1.0', title='Flask API with Swagger UI',
           security='Bearer Auth',
           authorizations=authorizations
           )
-
-# migrate = Migrate(app, db)  # https://flask-migrate.readthedocs.io/en/latest/
-# manager = Manager(app)
-# manager.add_command('db', MigrateCommand)
