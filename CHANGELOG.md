@@ -1,3 +1,10 @@
+## 1.2.1 (July 01, 2020)
+  - Update readme and redisDB deployment configuration
+  - Merge branch 'release-1.2'
+  - Merge branch 'release-1.1'
+  - Merge branch 'release-1.0'
+  - Merge branch 'release-0.2'
+
 ## 1.2.0 (July 01, 2020)
   - Merge branch 'feature/api/optional-delete' into develop
   - added new feature: can delete by filter (e.g. deleting selected IDs)
